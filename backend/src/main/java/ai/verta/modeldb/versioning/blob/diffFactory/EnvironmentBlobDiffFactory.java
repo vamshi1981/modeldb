@@ -103,10 +103,8 @@ public class EnvironmentBlobDiffFactory extends BlobDiffFactory {
             PythonEnvironmentBlob pythonB = python;
             if (pythonA.hasVersion() && pythonB.hasVersion()) {
               if (pythonA.getVersion().equals(pythonB.getVersion())) {
-                pythonDiff.setA(
-                    pythonDiff.getA().toBuilder().setVersion(VersionEnvironmentBlob.newBuilder()));
-                pythonDiff.setB(
-                    pythonDiff.getB().toBuilder().setVersion(VersionEnvironmentBlob.newBuilder()));
+                pythonDiff.setA(pythonDiff.getA().toBuilder().clearVersion());
+                pythonDiff.setB(pythonDiff.getB().toBuilder().clearVersion());
               }
             }
           } else {
