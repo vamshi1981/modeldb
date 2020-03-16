@@ -2,15 +2,7 @@ package ai.verta.modeldb.versioning.blob.diffFactory;
 
 import static ai.verta.modeldb.versioning.blob.diffFactory.ConfigBlobDiffFactory.removeCommon;
 
-import ai.verta.modeldb.versioning.BlobDiff;
-import ai.verta.modeldb.versioning.BlobExpanded;
-import ai.verta.modeldb.versioning.DockerEnvironmentDiff;
-import ai.verta.modeldb.versioning.EnvironmentBlob;
-import ai.verta.modeldb.versioning.EnvironmentDiff;
-import ai.verta.modeldb.versioning.EnvironmentVariablesBlob;
-import ai.verta.modeldb.versioning.PythonEnvironmentBlob;
-import ai.verta.modeldb.versioning.PythonEnvironmentDiff;
-import ai.verta.modeldb.versioning.PythonRequirementEnvironmentBlob;
+import ai.verta.modeldb.versioning.*;
 import com.google.protobuf.ProtocolStringList;
 import java.util.HashSet;
 import java.util.List;
@@ -106,6 +98,17 @@ public class EnvironmentBlobDiffFactory extends BlobDiffFactory {
                     .clearConstraints()
                     .addAllRequirements(pythonRequirementsBlobsB)
                     .addAllConstraints(pythonConstraintsBlobsB));
+
+            PythonEnvironmentBlob pythonA = pythonDiff.getA();
+            PythonEnvironmentBlob pythonB = python;
+            if (pythonA.hasVersion() && pythonB.hasVersion()) {
+              if (pythonA.getVersion().equals(pythonB.getVersion())) {
+                pythonDiff.setA(
+                    pythonDiff.getA().toBuilder().setVersion(VersionEnvironmentBlob.newBuilder()));
+                pythonDiff.setB(
+                    pythonDiff.getB().toBuilder().setVersion(VersionEnvironmentBlob.newBuilder()));
+              }
+            }
           } else {
             pythonDiff.setB(python);
           }
