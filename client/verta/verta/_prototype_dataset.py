@@ -31,6 +31,7 @@ class Dataset(object):
         # TODO: if there are branching lineages, this definitely isn't correct
         head = self._repo.get_commit(branch="master")
 
+        # TODO: maybe generate the actual Version objects
         return [commit.id for commit in head.log()]
 
 class DatasetVersion(object):
@@ -43,4 +44,5 @@ class DatasetVersion(object):
         return repr(self._commit.get(self._path))
 
     def list_parents(self):
+        # TODO: maybe generate the actual Version objects
         return [commit.id for commit in self._commit.log()][1:]
