@@ -551,74 +551,15 @@ class Client(object):
         else:
             raise ValueError("must specify either `name` or `id`")
 
-    # NOTE: dataset visibility cannot be set via a client
-    def set_dataset(self, name=None, type="local",
-                    desc=None, tags=None, attrs=None,
-                    workspace=None,
-                    public_within_org=None,
-                    id=None):
-        """
-        Attaches a Dataset to this Client.
+    def set_dataset(self, name):
+        # TODO: will type (e.g. S3) be specified & validated here, or at version, or at all?
 
-        If an accessible Dataset with name `name` does not already exist, it will be created
-        and initialized with specified metadata parameters. If such a Dataset does already exist,
-        it will be retrieved; specifying metadata parameters in this case will raise an exception.
+        # TODO: suppress "set repository" message
+        # TODO: avoid name collisions with user's other repositories
+        repo = self.set_repository(name)
 
-        Parameters
-        ----------
-        name : str, optional
-            Name of the Dataset. If no name is provided, one will be generated.
-        type : str, one of {'local', 's3', 'big query', 'atlas hive', 'postgres'}
-            The type of the dataset so we can collect the right type of metadata
-        desc : str, optional
-            Description of the Dataset.
-        tags : list of str, optional
-            Tags of the Dataset.
-        attrs : dict of str to {None, bool, float, int, str}, optional
-            Attributes of the Dataset.
-        workspace : str, optional
-            Workspace under which the Dataset with name `name` exists. If not provided, the current
-            user's personal workspace will be used.
-        public_within_org : bool, default False
-            If creating a Dataset in an organization's workspace, whether to make this Dataset
-            accessible to all members of that organization.
-        id : str, optional
-            ID of the Dataset. This parameter cannot be provided alongside `name`, and other
-            parameters will be ignored.
-
-        Returns
-        -------
-        :class:`Dataset`
-
-        Raises
-        ------
-        ValueError
-            If a Dataset with `name` already exists, but metadata parameters are passed in.
-
-        """
-        # Note: If a dataset with `name` already exists,
-        #       there is no way to determine its type/subclass from back end,
-        #       so it is assumed that the user has passed in the correct `type`.
-        if type == "local":
-            DatasetSubclass = _dataset.LocalDataset
-        elif type == "s3":
-            DatasetSubclass = _dataset.S3Dataset
-        elif type == "big query":
-            DatasetSubclass = _dataset.BigQueryDataset
-        elif type == "atlas hive":
-            DatasetSubclass = _dataset.AtlasHiveDataset
-        elif type == "postgres":
-            DatasetSubclass = _dataset.RDBMSDataset
-        else:
-            raise ValueError("`type` must be one of {'local', 's3', 'big query', 'atlas hive', 'postgres'}")
-
-        name = self._set_from_config_if_none(name, "dataset")
-        workspace = self._set_from_config_if_none(workspace, "workspace")
-        return DatasetSubclass(self._conn, self._conf,
-                               name=name, desc=desc, tags=tags, attrs=attrs,
-                               workspace=workspace,
-                               public_within_org=public_within_org,
-                               _dataset_id=id)
+        from . import _prototype_dataset
+        return _prototype_dataset.Dataset(repo)
 
     def get_dataset(self, name=None, id=None):
         """
@@ -2701,42 +2642,14 @@ class ExperimentRun(_ModelDBEntity):
             extension = None
         self._log_artifact(key, dataset, _CommonService.ArtifactTypeEnum.DATA, extension, overwrite=overwrite)
 
-    def log_dataset_version(self, key, dataset_version, overwrite=False):
-        """
-        Logs a Verta DatasetVersion to this ExperimentRun with the given key.
-
-        Parameters
-        ----------
-        key : str
-        dataset_version : :class:`~verta._dataset.DatasetVersion`
-        overwrite : bool, default False
-            Whether to allow overwriting a dataset version.
-
-        """
-        if not isinstance(dataset_version, _dataset.DatasetVersion):
-            raise ValueError("`dataset_version` must be of type DatasetVersion")
-
-        # TODO: hack because path_only artifact needs a placeholder path
-        dataset_path = "See attached dataset version"
-
-        # log key-path to ModelDB
-        Message = _ExperimentRunService.LogDataset
-        artifact_msg = _CommonService.Artifact(key=key,
-                                               path=dataset_path,
-                                               path_only=True,
-                                               artifact_type=_CommonService.ArtifactTypeEnum.DATA,
-                                               linked_artifact_id=dataset_version.id)
-        msg = Message(id=self.id, dataset=artifact_msg, overwrite=overwrite)
-        data = _utils.proto_to_json(msg)
-        response = _utils.make_request("POST",
-                                       "{}://{}/api/v1/modeldb/experiment-run/logDataset".format(self._conn.scheme, self._conn.socket),
-                                       self._conn, json=data)
-        if not response.ok:
-            if response.status_code == 409:
-                raise ValueError("dataset with key {} already exists;"
-                                 " consider setting overwrite=True".format(key))
-            else:
-                _utils.raise_for_http_error(response)
+    def log_dataset_version(self, key, dataset_version):
+        # TODO: avoid conflict if user actually logs a commit
+        self.log_commit(
+            commit=dataset_version._commit,
+            key_paths={
+                key: dataset_version._path,
+            },
+        )
 
     def log_dataset_path(self, key, path):
         """
