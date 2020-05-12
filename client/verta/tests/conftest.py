@@ -257,7 +257,7 @@ def client(host, port, email, dev_key):
     yield client
 
     if client.proj is not None:
-        utils.delete_project(client.proj.id, client._conn)
+        pass#utils.delete_project(client.proj.id, client._conn)
     print("[TEST LOG] test teardown completed {} UTC".format(datetime.datetime.utcnow()))
 
 
@@ -268,7 +268,7 @@ def experiment_run(client):
     client.set_experiment()
     run = client.set_experiment_run()
     print("[TEST LOG] Run ID is {}".format(run.id))
-    
+
     return run
 
 
@@ -279,7 +279,7 @@ def repository(client):
 
     yield repo
 
-    utils.delete_repository(repo.id, client._conn)
+    pass#utils.delete_repository(repo.id, client._conn)
 
 
 @pytest.fixture
@@ -297,4 +297,4 @@ def created_datasets(client):
     yield created_datasets
 
     if created_datasets:
-        utils.delete_datasets(list(set(dataset.id for dataset in created_datasets)), client._conn)
+        pass#utils.delete_datasets(list(set(dataset.id for dataset in created_datasets)), client._conn)
