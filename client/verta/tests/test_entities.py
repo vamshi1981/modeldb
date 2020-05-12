@@ -34,7 +34,7 @@ class TestClient:
         client._conn.auth = None
 
         assert client.set_project()
-        utils.delete_project(client.proj.id, client._conn)
+        pass#utils.delete_project(client.proj.id, client._conn)
 
     @pytest.mark.skipif('VERTA_EMAIL' not in os.environ or 'VERTA_DEV_KEY' not in os.environ, reason="insufficient Verta credentials")
     def test_verta_https(self):
@@ -136,12 +136,12 @@ class TestClient:
                         assert client.expt.name == EXPERIMENT_NAME
                     finally:
                         if client.proj is not None:
-                            utils.delete_project(client.proj.id, conn)
+                            pass#utils.delete_project(client.proj.id, conn)
                     dataset = client.set_dataset()
                     try:
                         assert dataset.name == DATASET_NAME
                     finally:
-                        utils.delete_datasets([dataset.id], conn)
+                        pass#utils.delete_datasets([dataset.id], conn)
                 else:
                     assert client._set_from_config_if_none(None, "project") == PROJECT_NAME
                     assert client._set_from_config_if_none(None, "experiment") == EXPERIMENT_NAME
