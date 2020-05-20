@@ -24,6 +24,8 @@ class S3(_dataset._Dataset):
     paths : list
         List of S3 URLs of the form ``"s3://<bucket-name>"`` or ``"s3://<bucket-name>/<key>"``, or
         objects returned by :meth:`S3.location`.
+    enable_mdb_versioning : bool, default False
+        Whether to upload the data itself to ModelDB to enable full versioning.
 
     Examples
     --------
@@ -45,7 +47,7 @@ class S3(_dataset._Dataset):
     """
     _S3_PATH = "s3://{}/{}"
 
-    def __init__(self, paths):
+    def __init__(self, paths, enable_mdb_versioning=False):
         if isinstance(paths, (six.string_types, S3Location)):
             paths = [paths]
 
@@ -72,6 +74,30 @@ class S3(_dataset._Dataset):
 
         s3_metadata = six.viewvalues(obj_paths_to_metadata)
         self._msg.s3.components.extend(s3_metadata)  # pylint: disable=no-member
+
+        if enable_mdb_versioning:
+            # TODO: consolidate these import steps; re-used from _get_s3_loc_metadata()
+            try:
+                import boto3
+            except ImportError:
+                e = ImportError("Boto 3 is not installed; try `pip install boto3`")
+                six.raise_from(e, None)
+            s3 = boto3.client('s3')
+
+            for component in self._msg.s3.components:
+                bucket, key = S3Location._parse_s3_url(component.path.path)
+                version_id = component.s3_version_id
+
+                bytestream = six.BytesIO()
+                extra_args = {'VersionId': version_id} if version_id else {}
+                s3.download_fileobj(bucket, key, bytestream, ExtraArgs=extra_args)
+                bytestream.seek(0)
+
+                # TODO: generate path using artifact checksum + key
+                # TODO: save path on component obj
+
+                # TODO: log artifact to MDB
+                # TODO: upload to MDB with presigned URL
 
     def __repr__(self):
         lines = ["S3 Version"]
