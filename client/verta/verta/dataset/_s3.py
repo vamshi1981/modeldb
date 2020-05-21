@@ -100,10 +100,19 @@ class S3(_dataset._Dataset):
                 bytestream.seek(0)
                 path = "{}/{}".format(checksum, key)
 
-                # TODO: save path on component obj
+                # save upload path on component obj
+                component.mdb_path = path  # TODO: update when protos are impl
 
                 # TODO: log artifact to MDB
+                #     need endpoint that doesn't require Run ID + key
+                pass
+
+                # TODO: get presigned URL
+                #     need endpoint that doesn't require Run ID + key
+                pass
+
                 # TODO: upload to MDB with presigned URL
+                pass
 
         self._msg.s3.components.extend(s3_metadata)  # pylint: disable=no-member
 
