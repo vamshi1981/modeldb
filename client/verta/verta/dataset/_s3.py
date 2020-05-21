@@ -103,15 +103,11 @@ class S3(_dataset._Dataset):
                 # save upload path on component obj
                 component.mdb_path = path  # TODO: update when protos are impl
 
-                # TODO: log artifact to MDB
-                #     need endpoint that doesn't require Run ID + key
-                pass
-
                 # TODO: get presigned URL
                 #     need endpoint that doesn't require Run ID + key
                 pass
 
-                # TODO: upload to MDB with presigned URL
+                # TODO: upload to artifact store with presigned URL
                 pass
 
         self._msg.s3.components.extend(s3_metadata)  # pylint: disable=no-member
