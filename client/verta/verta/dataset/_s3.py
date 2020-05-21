@@ -76,8 +76,6 @@ class S3(_dataset._Dataset):
             })
 
         s3_metadata = six.viewvalues(obj_paths_to_metadata)
-        self._msg.s3.components.extend(s3_metadata)  # pylint: disable=no-member
-
         if enable_mdb_versioning:
             # TODO: consolidate these import steps; re-used from _get_s3_loc_metadata()
             try:
@@ -106,6 +104,8 @@ class S3(_dataset._Dataset):
 
                 # TODO: log artifact to MDB
                 # TODO: upload to MDB with presigned URL
+
+        self._msg.s3.components.extend(s3_metadata)  # pylint: disable=no-member
 
     def __repr__(self):
         lines = ["S3 Version"]
