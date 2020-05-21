@@ -3,7 +3,6 @@
 from __future__ import print_function
 
 import hashlib
-import os
 
 from ..external import six
 from ..external.six.moves.urllib.parse import urlparse  # pylint: disable=import-error, no-name-in-module
@@ -102,6 +101,9 @@ class S3(_dataset._Dataset):
 
                 # save upload path on component obj
                 component.mdb_path = path  # TODO: update when protos are impl
+
+                # TODO: consolidate upload steps with ExperimentRun methods
+                # TODO: get access to a `conn`
 
                 # TODO: get presigned URL
                 #     need endpoint that doesn't require Run ID + key
