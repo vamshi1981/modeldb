@@ -2,6 +2,9 @@
 
 from __future__ import print_function
 
+import hashlib
+import os
+
 from ..external import six
 from ..external.six.moves.urllib.parse import urlparse  # pylint: disable=import-error, no-name-in-module
 
@@ -88,12 +91,17 @@ class S3(_dataset._Dataset):
                 bucket, key = S3Location._parse_s3_url(component.path.path)
                 version_id = component.s3_version_id
 
+                # download object from S3
                 bytestream = six.BytesIO()
                 extra_args = {'VersionId': version_id} if version_id else {}
                 s3.download_fileobj(bucket, key, bytestream, ExtraArgs=extra_args)
                 bytestream.seek(0)
 
-                # TODO: generate path using artifact checksum + key
+                # generate upload path from checksum + key
+                checksum = hashlib.sha256(bytestream.read()).hexdigest()
+                bytestream.seek(0)
+                path = "{}/{}".format(checksum, key)
+
                 # TODO: save path on component obj
 
                 # TODO: log artifact to MDB
