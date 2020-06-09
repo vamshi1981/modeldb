@@ -1332,6 +1332,12 @@ class Project(_ModelDBEntity):
                                        "{}://{}/api/v1/modeldb/project/createProject".format(conn.scheme, conn.socket),
                                        conn, json=data)
 
+        print(data)
+        print(response.status_code)
+        print(response.request.headers)
+        print(response.url)
+        print(response.text)
+
         if response.ok:
             response_msg = _utils.json_to_proto(response.json(), Message.Response)
             return response_msg.project
