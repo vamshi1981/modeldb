@@ -26,6 +26,9 @@ from verta.endpoint.update import DirectUpdateStrategy
 pytestmark = pytest.mark.not_oss
 
 
+pytest.skip("skipping deployment tests", allow_module_level=True)
+
+
 @pytest.fixture
 def model_packaging():
     """Additional items added to model API in log_model()."""

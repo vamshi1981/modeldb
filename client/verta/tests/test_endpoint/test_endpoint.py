@@ -21,6 +21,9 @@ from verta.utils import ModelAPI
 from ..utils import (get_build_ids, sys_path_manager)
 
 
+pytest.skip("skipping deployment tests", allow_module_level=True)
+
+
 class TestEndpoint:
     def test_create(self, client, created_endpoints):
         name = _utils.generate_default_name()

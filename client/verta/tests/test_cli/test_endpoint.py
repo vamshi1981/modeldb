@@ -15,6 +15,9 @@ from verta.endpoint.resources import Resources
 from ..utils import get_build_ids
 
 
+pytest.skip("skipping deployment tests", allow_module_level=True)
+
+
 class TestList:
     def test_list_endpoint(self, created_endpoints):
         client = Client()
@@ -79,6 +82,8 @@ class TestCreate:
 
 class TestGet:
     def test_get(self, client, created_endpoints, experiment_run, model_for_deployment):
+        pytest.skip("skipping deployment tests")
+
         experiment_run.log_model(model_for_deployment['model'], custom_modules=[])
         experiment_run.log_requirements(['scikit-learn'])
 
@@ -462,6 +467,8 @@ class TestDownload:
 
 class TestPredict:
     def test_predict(self, client, experiment_run, created_endpoints):
+        pytest.skip("skipping deployment tests")
+
         np = pytest.importorskip("numpy")
         sklearn = pytest.importorskip("sklearn")
         from sklearn.linear_model import LogisticRegression

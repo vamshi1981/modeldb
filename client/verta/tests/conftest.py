@@ -368,6 +368,8 @@ def created_datasets(client):
 
 @pytest.fixture
 def registered_model(client):
+    pytest.skip("skipping registry tests")
+
     model = client.get_or_create_registered_model()
     yield model
     model.delete()

@@ -22,6 +22,9 @@ from verta._tracking.deployable_entity import _CACHE_DIR
 from verta.endpoint.update import DirectUpdateStrategy
 
 
+pytest.skip("skipping registry tests", allow_module_level=True)
+
+
 class TestMDBIntegration:
     def test_from_run(self, experiment_run, model_for_deployment, registered_model):
         np = pytest.importorskip("numpy")
@@ -60,7 +63,7 @@ class TestModelVersion:
         version = registered_model.set_version(name=name)
 
         assert registered_model.set_version(name=version.name).id == version.id
-        
+
     def test_get_by_name(self, registered_model):
         model_version = registered_model.get_or_create_version(name="my version")
         retrieved_model_version = registered_model.get_version(name=model_version.name)
@@ -509,6 +512,8 @@ class TestDeployability:
             shutil.rmtree(_CACHE_DIR, ignore_errors=True)
 
     def test_model_artifacts(self, model_version, endpoint, in_tempdir):
+        pytest.skip("skipping deployment tests")
+
         key = "foo"
         val = {'a': 1}
 

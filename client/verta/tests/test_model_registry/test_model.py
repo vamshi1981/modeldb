@@ -4,6 +4,9 @@ import requests
 import verta
 
 
+pytest.skip("skipping registry tests", allow_module_level=True)
+
+
 class TestModel:
     def test_create(self, client, created_registered_models):
         registered_model = client.set_registered_model()

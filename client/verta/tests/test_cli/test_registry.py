@@ -19,6 +19,8 @@ from verta.endpoint.update._strategies import DirectUpdateStrategy
 from ..utils import sys_path_manager
 
 
+pytest.skip("skipping registry tests", allow_module_level=True)
+
 
 class TestCreate:
     def test_create_model(self, client, created_registered_models):
@@ -204,6 +206,8 @@ class TestCreate:
         assert model.workspace == organization.name
 
     def test_create_version_with_custom_modules(self, client, registered_model, created_endpoints):
+        pytest.skip("skipping deployment tests")
+
         torch = pytest.importorskip("torch")
         np = pytest.importorskip("numpy")
 
