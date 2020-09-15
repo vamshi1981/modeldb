@@ -322,6 +322,8 @@ class TestTensorFlow:
 
 class TestXGBoost:
     def test_callback(self, experiment_run):
+        pytest.skip("skipping XGBoost")
+
         verta_integrations_xgboost = pytest.importorskip("verta.integrations.xgboost")
         verta_callback = verta_integrations_xgboost.verta_callback
 
