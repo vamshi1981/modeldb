@@ -52,6 +52,7 @@ class TestClient:
                 os.environ[DEV_KEY_KEY] = DEV_KEY
 
 
+    @pytest.mark.skip(reason="skip access to app")
     @pytest.mark.skipif('VERTA_EMAIL' not in os.environ or 'VERTA_DEV_KEY' not in os.environ, reason="insufficient Verta credentials")
     def test_verta_https(self):
         hosts = [
@@ -105,10 +106,12 @@ class TestClient:
             else:
                 raise RuntimeError("faulty test; expected error")
 
+    @pytest.mark.skip(reason="http in host")
     @pytest.mark.skipif(not all(env_var in os.environ for env_var in ('VERTA_HOST', 'VERTA_EMAIL', 'VERTA_DEV_KEY')), reason="insufficient Verta credentials")
     def test_config_file(self):
         self.config_file_with_type_util(connect = False)
 
+    @pytest.mark.skip(reason="http in host")
     @pytest.mark.skipif(not all(env_var in os.environ for env_var in ('VERTA_HOST', 'VERTA_EMAIL', 'VERTA_DEV_KEY')), reason="insufficient Verta credentials")
     def test_config_file_connect(self):
         self.config_file_with_type_util(connect = True)
