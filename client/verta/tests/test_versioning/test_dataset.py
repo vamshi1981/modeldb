@@ -582,7 +582,7 @@ class TestS3ManagedVersioning:
         s3 = pytest.importorskip("boto3").client('s3')
 
         bucket1 = "verta-starter"
-        key1 = "census-train.csv"
+        key1 = "models/model.pkl"
         bucket2 = "convoliution-bucket"
         key2 = "tiny-files/tiny2.bin"
 
