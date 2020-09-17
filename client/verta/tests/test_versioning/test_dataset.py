@@ -98,7 +98,7 @@ class TestS3:
         s3 = pytest.importorskip("boto3").client('s3')
         S3_PATH = verta.dataset.S3._S3_PATH
 
-        bucket = "convoliution-bucket"
+        bucket = "verta-versioned-bucket"
 
         # collect latest versions of objects
         version_ids = {
@@ -120,7 +120,7 @@ class TestS3:
     def test_versioned_object(self):
         s3 = pytest.importorskip("boto3").client('s3')
 
-        bucket = "convoliution-bucket"
+        bucket = "verta-versioned-bucket"
         key = "data/census-train.csv"
 
         obj = s3.head_object(Bucket=bucket, Key=key)
@@ -134,7 +134,7 @@ class TestS3:
     def test_versioned_object_by_id(self):
         s3 = pytest.importorskip("boto3").client('s3')
 
-        bucket = "convoliution-bucket"
+        bucket = "verta-versioned-bucket"
         key = "data/census-train.csv"
         s3_url = "s3://{}/{}".format(bucket, key)
 
@@ -158,7 +158,7 @@ class TestS3:
         s3 = pytest.importorskip("boto3").client('s3')
         S3_PATH = verta.dataset.S3._S3_PATH
 
-        bucket = "convoliution-bucket"
+        bucket = "verta-versioned-bucket"
         folder = "data/"
         s3_url = "s3://{}/{}".format(bucket, folder)
 
@@ -203,7 +203,7 @@ class TestS3:
 
     def test_concat(self):
         dataset1 = verta.dataset.S3("s3://verta-starter/")
-        dataset2 = verta.dataset.S3("s3://convoliution-bucket/")
+        dataset2 = verta.dataset.S3("s3://verta-versioned-bucket/")
         components = dataset1.list_components() + dataset2.list_components()
         components = list(sorted(components, key=lambda component: component.path))
 
@@ -448,7 +448,7 @@ class TestS3ManagedVersioning:
         s3 = pytest.importorskip("boto3").client('s3')
 
         filename = "tiny1.bin"
-        bucket = "convoliution-bucket"
+        bucket = "verta-versioned-bucket"
         key = "tiny-files/{}".format(filename)
         s3_key = "s3://{}/{}".format(bucket, key)
         blob_path = "data"
@@ -490,7 +490,7 @@ class TestS3ManagedVersioning:
     def test_mngd_ver_folder(self, commit):
         s3 = pytest.importorskip("boto3").client('s3')
 
-        bucket = "convoliution-bucket"
+        bucket = "verta-versioned-bucket"
         dirname = "tiny-files/"
         s3_folder = "s3://{}/{}".format(bucket, dirname)
         blob_path = "data"
@@ -535,7 +535,7 @@ class TestS3ManagedVersioning:
 
     def test_not_to_s3_dir(self, commit):
         """If the user specifies "s3://", things shouldn't go into an "s3:" dir."""
-        bucket = "convoliution-bucket"
+        bucket = "verta-versioned-bucket"
         dirname = "tiny-files/"
         s3_folder = "s3://{}/{}".format(bucket, dirname)
         blob_path = "data"
@@ -552,7 +552,7 @@ class TestS3ManagedVersioning:
     def test_download_all(self, commit):
         s3 = pytest.importorskip("boto3").client('s3')
 
-        bucket = "convoliution-bucket"
+        bucket = "verta-versioned-bucket"
         dirname = "tiny-files/"
         s3_folder = "s3://{}/{}".format(bucket, dirname)
 
@@ -583,7 +583,7 @@ class TestS3ManagedVersioning:
 
         bucket1 = "verta-starter"
         key1 = "models/model.pkl"
-        bucket2 = "convoliution-bucket"
+        bucket2 = "verta-versioned-bucket"
         key2 = "tiny-files/tiny2.bin"
 
         # create dir for reference files
@@ -622,7 +622,7 @@ class TestS3ManagedVersioning:
             enable_mdb_versioning=True,
         )
         dataset2 = verta.dataset.S3(
-            "s3://convoliution-bucket/",
+            "s3://verta-versioned-bucket/",
             enable_mdb_versioning=False,
         )
 
